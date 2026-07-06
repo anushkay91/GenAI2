@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: ankane/pgvector:v0.5.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: decision_intel
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d decision_intel"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - GCP_PROJECT_ID=carbon1-499909
+      - GCP_LOCATION=asia-south1
+      - GEMINI_MODEL=gemini-1.5-pro
+      - ALLOYDB_HOST=db
+      - ALLOYDB_PORT=5432
+      - ALLOYDB_USER=postgres
+      - ALLOYDB_PASSWORD=postgres
+      - ALLOYDB_DB=decision_intel
+      - BQ_DATASET=smart_city_metrics
+      - GCS_BUCKET_NAME=smart-city-documents-bucket
+      - SECRET_KEY=LOCAL_DEVELOPMENT_SECRET_KEY_CHOOSE_A_SECURE_ONE_IN_PROD
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
