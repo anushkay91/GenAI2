@@ -1,5 +1,5 @@
 name: Build and Deploy to Cloud Run
-
+# Trigger deployment after updating OIDC provider mapping to assertion.sub
 on:
   push:
     branches:
