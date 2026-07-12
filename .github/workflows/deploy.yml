@@ -30,8 +30,8 @@ jobs:
         with:
           token_format: access_token
           # Workload Identity Provider configuration (configure in GCP)
-          workload_identity_provider: 'projects/1234567890/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-          service_account: 'github-deployer@smart-city-decision-intel.iam.gserviceaccount.com'
+          workload_identity_provider: 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'github-deployer@carbon1-499909.iam.gserviceaccount.com'
 
       # 2. Setup Docker authentication
       - name: Docker Auth
