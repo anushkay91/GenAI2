@@ -96,6 +96,7 @@ def retrieve_relevant_chunks(db, query: str, top_k: int = 3) -> List[Dict[str, A
             # PostgreSQL pgvector similarity search
             # We select chunks and order by cosine distance
             # Using raw sql/query because pgvector can be accessed via cosine_distance
+            # pyrefly: ignore [missing-import]
             from pgvector.sqlalchemy import Vector
             
             # Retrieve with SQLAlchemy

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Bell, ShieldAlert, CircleAlert, CheckCircle2 } from 'lucide-react';
 
 interface AlertItem {

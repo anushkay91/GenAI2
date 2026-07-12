@@ -63,7 +63,7 @@ Write-Host "Creating Artifact Registry repository for container image..."
 try { & $GCLOUD artifacts repositories create smart-city-repo --repository-format=docker --location=$REGION --description="Smart City Decision Engine Container Repo" } catch {}
 
 Write-Host "Building and pushing container..."
-& $GCLOUD builds submit --tag $IMAGE_NAME ./backend
+& $GCLOUD builds submit --tag $IMAGE_NAME --dockerfile=backend/Dockerfile .
 
 Write-Host "Deploying to Cloud Run..."
 & $GCLOUD run deploy $SERVICE_NAME `

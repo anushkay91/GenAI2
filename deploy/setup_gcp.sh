@@ -97,8 +97,7 @@ gcloud artifacts repositories create smart-city-repo \
     --description="Smart City Decision Engine Container Repo" || true
 
 echo "Building and pushing container..."
-# Build backend container locally and submit to Cloud Build
-gcloud builds submit --tag "${IMAGE_NAME}" ./backend
+gcloud builds submit --tag "${IMAGE_NAME}" --dockerfile=backend/Dockerfile .
 
 echo "Deploying to Cloud Run..."
 gcloud run deploy "${SERVICE_NAME}" \

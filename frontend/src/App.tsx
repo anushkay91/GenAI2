@@ -4,11 +4,9 @@ import {
   MessageSquare, 
   GitFork, 
   FileText, 
-  ShieldAlert, 
   Database,
   UserCheck,
-  Building,
-  LogOut
+  Building
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import AskAI from './components/AskAI';
@@ -19,7 +17,6 @@ import AlertPanel from './components/AlertPanel';
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'chat' | 'workflows' | 'documents'>('dashboard');
   const [userRole, setUserRole] = useState<'citizen' | 'analyst' | 'officer'>('officer');
-  const [token, setToken] = useState<string | null>("simulated_jwt_token");
   
   // Dummy authentication login handling
   const [username, setUsername] = useState('Admin_Officer');

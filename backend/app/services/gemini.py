@@ -16,6 +16,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 
 try:
     from google import genai
+    # pyrefly: ignore [missing-import]
     from google.genai import types
     
     # 1. Check if we should initialize with Vertex AI / Enterprise
@@ -51,6 +52,7 @@ def generate_content(prompt: str, image_bytes: Optional[bytes] = None, system_in
             config = {}
             if system_instruction:
                 # In google-genai, config is passed as types.GenerateContentConfig
+                # pyrefly: ignore [missing-import]
                 from google.genai import types
                 config = types.GenerateContentConfig(
                     system_instruction=system_instruction,

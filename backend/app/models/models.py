@@ -9,6 +9,7 @@ Base = declarative_base()
 
 # Dynamic handling of pgvector vs SQLite fallback
 try:
+    # pyrefly: ignore [missing-import]
     from pgvector.sqlalchemy import Vector
     HAS_PGVECTOR = True
 except ImportError:
