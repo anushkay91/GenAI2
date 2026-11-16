@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+backend/static/
+dist/
+frontend/dist/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Databases & Runtime State
+*.db
+*.sqlite
+*.sqlite3
+decision_intel.db
+backend/decision_intel.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Python Caches & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+
+# IDEs & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

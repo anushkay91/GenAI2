@@ -1,0 +1,29 @@
+# Pyrefly Configuration for Smart City Decision Intelligence Platform
+
+search-path = [
+    ".",
+    "backend",
+    "backend/app"
+]
+
+python-interpreter-path = "C:/Users/Lenovo/AppData/Local/Python/pythoncore-3.14-64/python.exe"
+
+site-package-path = [
+    "C:/Users/Lenovo/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages"
+]
+
+python-version = "3.14"
+python-platform = "windows"
+skip-interpreter-query = false
+
+ignore-missing-imports = [
+    "pydantic_settings",
+    "pydantic_settings.*",
+    "pgvector",
+    "pgvector.*",
+    "google.genai",
+    "google.genai.*"
+]
+
+[errors]
+missing-import = "ignore"
