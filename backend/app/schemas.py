@@ -77,3 +77,23 @@ class DashboardMetricsResponse(BaseModel):
     pending_tickets: int
     grievances_by_category: List[Dict[str, Any]]
     iot_sensors_status: List[Dict[str, Any]]
+
+
+# --- Agent Structured Output Schemas ---
+class SectorPredictionResponse(BaseModel):
+    sector: str = Field(..., description="Municipal sector name, e.g., traffic, water, waste, grievances")
+    ward_id: int = Field(..., ge=1, le=999, description="Ward numerical identifier")
+    trend_direction: str = Field(..., description="Direction of trend: Increasing, Decreasing, or Stable")
+    predicted_load_percentage: float = Field(..., ge=0.0, le=100.0, description="Projected sector load percentage")
+    anomaly_risk_score: float = Field(..., ge=0.0, le=1.0, description="Risk probability score between 0.0 and 1.0")
+    forecast_summary: str = Field(..., min_length=1, description="Concise textual summary of forecast")
+    contributing_factors: List[str] = Field(default_factory=list, description="Key drivers of the predicted trend")
+    confidence_score: float = Field(..., ge=0.0, le=1.0, description="Statistical confidence score between 0.0 and 1.0")
+
+
+class ActionRecommendationResponse(BaseModel):
+    immediate_actions: List[str] = Field(..., min_length=1, description="Immediate 1-2 hour tactical actions")
+    remedial_actions: List[str] = Field(default_factory=list, description="24-hour remedial actions")
+    long_term_strategies: List[str] = Field(default_factory=list, description="Long-term structural reforms")
+    cost_benefit_assessment: str = Field(..., min_length=1, description="Brief financial or operational assessment")
+    confidence_score: float = Field(..., ge=0.0, le=1.0, description="Confidence score between 0.0 and 1.0")

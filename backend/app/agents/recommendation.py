@@ -1,5 +1,7 @@
 import logging
+import json
 from app.services.gemini import generate_content
+from app.schemas import ActionRecommendationResponse
 
 logger = logging.getLogger("app.agents.recommendation")
 
@@ -44,7 +46,7 @@ class RecommendationAgent:
             system_instruction="You are a senior smart city advisor trained in public policy, emergency response, and resource allocation."
         )
         
-        # Try parsing JSON, or fall back to high-quality mockup
+        # Try parsing and validating JSON with Pydantic
         try:
             cleaned_text = response_text.strip()
             if cleaned_text.startswith("```json"):
@@ -53,24 +55,26 @@ class RecommendationAgent:
                 cleaned_text = cleaned_text[:-3]
             cleaned_text = cleaned_text.strip()
             
-            import json
-            return json.loads(cleaned_text)
+            parsed_data = json.loads(cleaned_text)
+            validated = ActionRecommendationResponse.model_validate(parsed_data)
+            return validated.model_dump()
         except Exception as e:
-            logger.warning(f"Failed to parse recommendations JSON ({e}). Returning high-quality mockup.")
-            return {
-                "immediate_actions": [
+            logger.warning(f"Failed to parse or validate recommendations JSON ({e}). Returning high-quality fallback.")
+            fallback = ActionRecommendationResponse(
+                immediate_actions=[
                     "Deploy emergency traffic marshals to redirect vehicles.",
                     "Dispatch mobile water tankers to affected residential blocks."
                 ],
-                "remedial_actions": [
+                remedial_actions=[
                     "Inspect local distribution mains for pressure loss anomalies.",
                     "Coordinate with local electricity boards to prevent utility outages."
                 ],
-                "long_term_strategies": [
+                long_term_strategies=[
                     "Integrate automated pressure-sensing valves into the ward pipeline grid.",
                     "Develop citizen advisory dashboards on the civic grievance app."
                 ],
-                "cost_benefit_assessment": "The immediate deployments require low capital (approx ₹20,000) and yield high immediate relief (reducing congestion by 30% in 1 hour).",
-                "confidence_score": 0.92
-            }
+                cost_benefit_assessment="The immediate deployments require low capital (approx ₹20,000) and yield high immediate relief (reducing congestion by 30% in 1 hour).",
+                confidence_score=0.92
+            )
+            return fallback.model_dump()
         

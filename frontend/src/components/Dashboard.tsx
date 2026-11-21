@@ -94,7 +94,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
             <Activity size={24} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium">Total Workflows</p>
+            <p className="text-xs text-slate-300 font-medium">Total Workflows</p>
             <h3 className="text-2xl font-bold text-white mt-1 font-mono">
               {metrics.total_tickets || 42}
             </h3>
@@ -111,11 +111,11 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
             <CheckCircle size={24} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium">Resolved Today</p>
+            <p className="text-xs text-slate-300 font-medium">Resolved Today</p>
             <h3 className="text-2xl font-bold text-white mt-1 font-mono">
               {metrics.resolved_tickets || 28}
             </h3>
-            <span className="text-[10px] text-slate-400 mt-1 block">
+            <span className="text-[10px] text-slate-300 mt-1 block">
               Automated resolution rate: 68%
             </span>
           </div>
@@ -127,7 +127,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
             <Clock size={24} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium">Pending Actions</p>
+            <p className="text-xs text-slate-300 font-medium">Pending Actions</p>
             <h3 className="text-2xl font-bold text-white mt-1 font-mono">
               {metrics.pending_tickets || 14}
             </h3>
@@ -143,7 +143,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
             <AlertTriangle size={24} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium">Telemetry Anomaly Index</p>
+            <p className="text-xs text-slate-300 font-medium">Telemetry Anomaly Index</p>
             <h3 className="text-2xl font-bold text-white mt-1 font-mono">
               2.4%
             </h3>
@@ -163,7 +163,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-bold text-white text-base">Grievance Trends by Sector</h3>
-              <p className="text-xs text-slate-400">Citizen reported issues aggregated from BigQuery telemetry</p>
+              <p className="text-xs text-slate-300">Citizen reported issues aggregated from BigQuery telemetry</p>
             </div>
             <span className="text-[10px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 font-mono">
               Last 7 Days
@@ -240,7 +240,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-bold text-white text-base">IoT Infrastructure Telemetry Status</h3>
-            <p className="text-xs text-slate-400">Live smart water flow, air quality index (AQI), and traffic density sensor grid</p>
+            <p className="text-xs text-slate-300">Live smart water flow, air quality index (AQI), and traffic density sensor grid</p>
           </div>
           <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-mono flex items-center space-x-1.5 font-semibold">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
@@ -252,7 +252,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
           <table className="w-full text-left text-xs border-collapse">
             <caption className="sr-only">Real-time municipal IoT sensor readings across city wards</caption>
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 uppercase tracking-widest text-[9px] font-mono">
+              <tr className="border-b border-slate-800 text-slate-300 uppercase tracking-widest text-[9px] font-mono">
                 <th scope="col" className="pb-3.5 pl-2 font-medium">Sensor Identifier</th>
                 <th scope="col" className="pb-3.5 font-medium">Sector Metric</th>
                 <th scope="col" className="pb-3.5 font-medium">Ward Jurisdiction</th>
@@ -272,7 +272,7 @@ export default function Dashboard({ userRole }: { userRole: UserRole }) {
                       {sensor.metric_type === 'traffic_density' && <Car size={14} className="text-amber-400" aria-hidden="true" />}
                       <span>{sensor.metric_type.replace('_', ' ')}</span>
                     </td>
-                    <td className="py-3.5 text-slate-400">Ward {sensor.ward_id}</td>
+                    <td className="py-3.5 text-slate-300">Ward {sensor.ward_id}</td>
                     <td className="py-3.5 font-mono text-slate-200 font-bold">{sensor.value}</td>
                     <td className="py-3.5 pr-2 text-right">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border ${

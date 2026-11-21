@@ -1,7 +1,8 @@
 import logging
-import datetime
+import json
 from app.services.gemini import generate_content
 from app.agents.analytics import AnalyticsAgent
+from app.schemas import SectorPredictionResponse
 
 logger = logging.getLogger("app.agents.prediction")
 
@@ -52,9 +53,8 @@ class PredictionAgent:
             system_instruction="You are an expert predictive data modeler specializing in urban planning, IoT telemetry analytics, and smart city operations."
         )
         
-        # Parse or simulate fallback JSON output
+        # Parse and validate with Pydantic schema
         try:
-            # Strip potential code block formatting if present
             cleaned_text = response_text.strip()
             if cleaned_text.startswith("```json"):
                 cleaned_text = cleaned_text[7:]
@@ -62,22 +62,22 @@ class PredictionAgent:
                 cleaned_text = cleaned_text[:-3]
             cleaned_text = cleaned_text.strip()
             
-            import json
-            result = json.loads(cleaned_text)
-            return result
+            parsed_data = json.loads(cleaned_text)
+            validated = SectorPredictionResponse.model_validate(parsed_data)
+            return validated.model_dump()
         except Exception as e:
-            logger.warning(f"Failed to parse prediction response as JSON ({e}). Returning structured simulation.")
-            # Realistic default simulation
-            return {
-                "sector": sector,
-                "ward_id": ward_id,
-                "trend_direction": "Increasing",
-                "predicted_load_percentage": 82 if sector == "traffic" else 65,
-                "anomaly_risk_score": 0.72 if sector == "traffic" else 0.35,
-                "forecast_summary": f"Predictive models indicate a significant load increase for '{sector}' in Ward {ward_id} over the upcoming 24 hours.",
-                "contributing_factors": [
+            logger.warning(f"Failed to parse or validate prediction response ({e}). Returning structured fallback.")
+            fallback = SectorPredictionResponse(
+                sector=sector,
+                ward_id=ward_id,
+                trend_direction="Increasing",
+                predicted_load_percentage=82.0 if sector == "traffic" else 65.0,
+                anomaly_risk_score=0.72 if sector == "traffic" else 0.35,
+                forecast_summary=f"Predictive models indicate a significant load increase for '{sector}' in Ward {ward_id} over the upcoming 24 hours.",
+                contributing_factors=[
                     "Peak traffic rush hour congestion patterns",
                     "Monsoon humidity causing high water consumption demands"
                 ],
-                "confidence_score": 0.90
-            }
+                confidence_score=0.90
+            )
+            return fallback.model_dump()

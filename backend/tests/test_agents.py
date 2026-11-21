@@ -58,3 +58,26 @@ def test_ceo_agent_adversarial_prompt_handling(db_session):
     assert "confidence_score" in res
     assert isinstance(res["response"], str)
     assert len(res["response"]) > 0
+
+def test_prediction_agent_malformed_llm_handling(monkeypatch):
+    agent = PredictionAgent()
+    import app.agents.prediction as pred_mod
+    monkeypatch.setattr(pred_mod, "generate_content", lambda **kwargs: "MALFORMED NON-JSON RESPONSE {{}}")
+    
+    res = agent.predict_sector_load("water", 102)
+    assert isinstance(res, dict)
+    assert res["sector"] == "water"
+    assert res["ward_id"] == 102
+    assert "anomaly_risk_score" in res
+    assert 0.0 <= res["confidence_score"] <= 1.0
+
+def test_recommendation_agent_malformed_llm_handling(monkeypatch):
+    agent = RecommendationAgent()
+    import app.agents.recommendation as rec_mod
+    monkeypatch.setattr(rec_mod, "generate_content", lambda **kwargs: "```invalid json [1, 2, 3]```")
+    
+    res = agent.generate_mitigation_strategies("Traffic", "Congestion on main ring road", "Critical")
+    assert isinstance(res, dict)
+    assert len(res["immediate_actions"]) > 0
+    assert "cost_benefit_assessment" in res
+    assert 0.0 <= res["confidence_score"] <= 1.0

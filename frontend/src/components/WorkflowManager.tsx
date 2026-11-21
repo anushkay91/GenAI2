@@ -16,6 +16,7 @@ export default function WorkflowManager({ userRole }: { userRole: UserRole }) {
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const modalRef = useRef<HTMLDivElement>(null);
   const initialInputRef = useRef<HTMLInputElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
   // Form State
   const [title, setTitle] = useState('');
@@ -75,15 +76,39 @@ export default function WorkflowManager({ userRole }: { userRole: UserRole }) {
     };
   }, []);
 
-  // Modal keyboard and click outside handling
+  // Modal keyboard, focus trap, and focus restoration handling
   useEffect(() => {
     if (showModal) {
       initialInputRef.current?.focus();
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setShowModal(false);
+        if (e.key === 'Escape') {
+          setShowModal(false);
+        } else if (e.key === 'Tab') {
+          if (!modalRef.current) return;
+          const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          if (focusable.length === 0) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              last.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === last) {
+              first.focus();
+              e.preventDefault();
+            }
+          }
+        }
       };
       document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        triggerButtonRef.current?.focus();
+      };
     }
   }, [showModal]);
 
@@ -210,6 +235,7 @@ export default function WorkflowManager({ userRole }: { userRole: UserRole }) {
 
           {/* Trigger Workflow Button (Officer Only) */}
           <button
+            ref={triggerButtonRef}
             type="button"
             onClick={() => {
               if (userRole !== 'officer') {
