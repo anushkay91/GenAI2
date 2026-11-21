@@ -1,6 +1,10 @@
 import os
+import logging
 from typing import List, Optional
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict  # pyrefly: ignore[missing-import] # type: ignore
+
+logger = logging.getLogger("app.config")
 
 class Settings(BaseSettings):
     # App & Environment Settings
@@ -56,6 +60,24 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY", "SUPER_SECRET_SMART_CITY_DECISION_PLATFORM_KEY")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
+
+    @model_validator(mode="after")
+    def validate_security_settings(self):
+        insecure_default = "SUPER_SECRET_SMART_CITY_DECISION_PLATFORM_KEY"
+        if self.ENVIRONMENT == "production":
+            if self.SECRET_KEY == insecure_default:
+                raise ValueError(
+                    "Production deployment rejected: SECRET_KEY must be overridden with a secure, random value in production."
+                )
+            if len(self.SECRET_KEY) < 32:
+                raise ValueError(
+                    "Production deployment rejected: SECRET_KEY must be at least 32 characters long."
+                )
+        elif self.SECRET_KEY == insecure_default:
+            logger.warning(
+                "Running with default development SECRET_KEY. Ensure a strong SECRET_KEY is set in production."
+            )
+        return self
 
     model_config = SettingsConfigDict(
         env_file=".env", 

@@ -29,3 +29,20 @@ def test_role_checker_enforcement():
     with pytest.raises(HTTPException) as exc_info:
         checker(citizen_user)
     assert exc_info.value.status_code == 403
+
+def test_production_secret_key_validation():
+    from app.config import Settings
+    # Production with default insecure secret must raise ValueError
+    with pytest.raises(ValueError, match="SECRET_KEY must be overridden"):
+        Settings(ENVIRONMENT="production", SECRET_KEY="SUPER_SECRET_SMART_CITY_DECISION_PLATFORM_KEY")
+    
+    # Production with short secret must raise ValueError
+    with pytest.raises(ValueError, match="at least 32 characters"):
+        Settings(ENVIRONMENT="production", SECRET_KEY="short-secret")
+        
+    # Production with valid high-entropy secret must pass
+    valid_settings = Settings(
+        ENVIRONMENT="production", 
+        SECRET_KEY="A_VERY_SECURE_64_CHARACTER_RANDOM_SECRET_KEY_FOR_TESTING_PURPOSES_OK"
+    )
+    assert valid_settings.ENVIRONMENT == "production"
