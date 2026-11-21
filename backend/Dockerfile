@@ -20,6 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
 # Copy frontend build output to backend static folder
 COPY --from=frontend-builder /frontend/dist ./static
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080 8000
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
 

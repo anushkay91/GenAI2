@@ -25,6 +25,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - PORT=8000
       - ENVIRONMENT=production
       - DEBUG=false
       - GCP_PROJECT_ID=${GCP_PROJECT_ID:-smartcity-515403}
