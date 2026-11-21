@@ -154,6 +154,17 @@ The local SQLite and AlloyDB databases automatically seed three verification acc
 
 ---
 
+## 🔬 Simulation & Operational Disclosures (Academic & Competition Truthfulness)
+
+To ensure scientific honesty and evaluator transparency, the platform operates in **Dual Operational Modes**:
+1. **Live Google Cloud Mode:** When deployed to Google Cloud Run with service account permissions, the system connects directly to Google Cloud AlloyDB for PostgreSQL, BigQuery datasets, and Vertex AI / Gemini 1.5 Pro via Google Cloud APIs.
+2. **Safe Deterministic Simulator Mode (Offline / Demonstration):**
+   - **IoT Telemetry:** In the absence of live municipal sensor feeds or live BigQuery permissions, sensor streams (AQI, water flow, traffic density) are generated using high-fidelity deterministic simulations modeled after Varanasi municipal wards (Wards 101–105).
+   - **SMS Dispatches:** Automated field dispatches in `WorkflowAgent` simulate Twilio/SMS delivery via detailed structured log dispatches.
+   - **Semantic RAG Offline Mode:** In environments without internet access or Google API credentials, embeddings use hash-seeded deterministic vectors ensuring zero external dependency during offline judging.
+
+---
+
 ## ☁️ Google Cloud Deployment (Cloud Run)
 
 Provision required GCP infrastructure using the included deployment scripts:
