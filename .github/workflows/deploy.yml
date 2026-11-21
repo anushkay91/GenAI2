@@ -52,7 +52,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          workload_identity_provider: ${{ secrets.WIF_PROVIDER || 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider' }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER || 'projects/1054042324015/locations/global/workloadIdentityPools/github-pool/providers/github-provider' }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT || 'github-deployer@smartcity-515403.iam.gserviceaccount.com' }}
 
       # 3. Setup Docker authentication
