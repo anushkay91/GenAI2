@@ -24,26 +24,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1a. Authenticate with Google Cloud using Service Account Key JSON (if provided)
+      # 1. Detect credential method from GitHub Secrets
+      - name: Detect Auth Mode
+        id: auth_mode
+        env:
+          SA_KEY: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || '' }}
+        run: |
+          if [ -n "$SA_KEY" ]; then
+            echo "mode=sa" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=wif" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 2a. Authenticate with Google Cloud using Service Account Key JSON (if provided)
       - name: Google Auth (Service Account Key)
         id: auth_sa
-        if: "${{ secrets.GCP_SA_KEY != '' || secrets.GOOGLE_CREDENTIALS != '' || secrets.GCP_CREDENTIALS != '' || secrets.GCP_KEY != '' || secrets.SERVICE_ACCOUNT_KEY != '' || (secrets.SECRET_KEY != '' && contains(secrets.SECRET_KEY, 'private_key')) }}"
+        if: steps.auth_mode.outputs.mode == 'sa'
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          credentials_json: "${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || secrets.SECRET_KEY }}"
+          credentials_json: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY }}
 
-      # 1b. Authenticate with Google Cloud using Workload Identity Federation (fallback)
+      # 2b. Authenticate with Google Cloud using Workload Identity Federation (fallback)
       - name: Google Auth (Workload Identity Federation)
         id: auth_wif
-        if: "${{ !(secrets.GCP_SA_KEY != '' || secrets.GOOGLE_CREDENTIALS != '' || secrets.GCP_CREDENTIALS != '' || secrets.GCP_KEY != '' || secrets.SERVICE_ACCOUNT_KEY != '' || (secrets.SECRET_KEY != '' && contains(secrets.SECRET_KEY, 'private_key'))) }}"
+        if: steps.auth_mode.outputs.mode == 'wif'
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
           workload_identity_provider: ${{ secrets.WIF_PROVIDER || 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider' }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT || 'github-deployer@smartcity-515403.iam.gserviceaccount.com' }}
 
-      # 2. Setup Docker authentication
+      # 3. Setup Docker authentication
       - name: Docker Auth
         uses: docker/login-action@v3
         with:
