@@ -5,7 +5,7 @@
 set -eo pipefail
 
 # 1. Configuration variables
-PROJECT_ID="carbon1-499909"
+PROJECT_ID="smartcity-515403"
 REGION="asia-south1" # Mumbai, India (tailored for Indian Smart Cities)
 CLUSTER_NAME="smart-city-cluster"
 INSTANCE_NAME="smart-city-instance"

@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     )
     
     # Google Cloud Core Settings
-    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "carbon1-499909")
+    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "smartcity-515403")
     GCP_LOCATION: str = os.getenv("GCP_LOCATION", "asia-south1")  # India Region
     
     # Gemini Models

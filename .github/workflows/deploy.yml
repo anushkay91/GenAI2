@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
-  PROJECT_ID: carbon1-499909
+  PROJECT_ID: smartcity-515403
   REGION: asia-south1
   SERVICE_NAME: decision-intel-backend
   REPO_NAME: smart-city-repo
@@ -29,9 +30,9 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          # Workload Identity Provider configuration (configure in GCP)
-          workload_identity_provider: 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          service_account: 'github-deployer@carbon1-499909.iam.gserviceaccount.com'
+          # Workload Identity Provider configuration (supports secret or direct fallback)
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER || 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider' }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT || 'github-deployer@smartcity-515403.iam.gserviceaccount.com' }}
 
       # 2. Setup Docker authentication
       - name: Docker Auth

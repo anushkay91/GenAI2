@@ -2,7 +2,7 @@
 # Production-ready, flexible parameterization for multi-developer environments
 
 param (
-    [string]$ProjectId = "carbon1-499909",
+    [string]$ProjectId = "smartcity-515403",
     [string]$Region = "asia-south1", # Mumbai, India (tailored for Indian Smart Cities)
     [string]$ClusterName = "smart-city-cluster",
     [string]$InstanceName = "smart-city-instance",

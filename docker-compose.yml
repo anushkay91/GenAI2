@@ -27,7 +27,7 @@ services:
     environment:
       - ENVIRONMENT=production
       - DEBUG=false
-      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-carbon1-499909}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-smartcity-515403}
       - GCP_LOCATION=${GCP_LOCATION:-asia-south1}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-pro}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-text-embedding-004}
