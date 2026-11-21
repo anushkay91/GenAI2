@@ -1,6 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getStoredToken, authenticateRole } from '../services/api';
 
+// Polyfill sessionStorage for Node 20 CI environment
+if (typeof globalThis.sessionStorage === 'undefined') {
+  const store = new Map<string, string>();
+  globalThis.sessionStorage = {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, val: string) => { store.set(key, String(val)); },
+    removeItem: (key: string) => { store.delete(key); },
+    clear: () => { store.clear(); },
+    key: (index: number) => Array.from(store.keys())[index] ?? null,
+    get length() { return store.size; },
+  } as Storage;
+}
+
 describe('Frontend API & Authentication Services', () => {
   beforeEach(() => {
     sessionStorage.clear();
