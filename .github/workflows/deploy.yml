@@ -24,13 +24,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Authenticate with Google Cloud
-      - name: Google Auth
-        id: auth
+      # 1a. Authenticate with Google Cloud using Service Account Key JSON (if provided)
+      - name: Google Auth (Service Account Key)
+        id: auth_sa
+        if: "${{ secrets.GCP_SA_KEY != '' || secrets.GOOGLE_CREDENTIALS != '' || secrets.GCP_CREDENTIALS != '' || secrets.GCP_KEY != '' || secrets.SERVICE_ACCOUNT_KEY != '' || (secrets.SECRET_KEY != '' && contains(secrets.SECRET_KEY, 'private_key')) }}"
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          # Workload Identity Provider configuration (supports secret or direct fallback)
+          credentials_json: "${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || secrets.SECRET_KEY }}"
+
+      # 1b. Authenticate with Google Cloud using Workload Identity Federation (fallback)
+      - name: Google Auth (Workload Identity Federation)
+        id: auth_wif
+        if: "${{ !(secrets.GCP_SA_KEY != '' || secrets.GOOGLE_CREDENTIALS != '' || secrets.GCP_CREDENTIALS != '' || secrets.GCP_KEY != '' || secrets.SERVICE_ACCOUNT_KEY != '' || (secrets.SECRET_KEY != '' && contains(secrets.SECRET_KEY, 'private_key'))) }}"
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
           workload_identity_provider: ${{ secrets.WIF_PROVIDER || 'projects/1039572329634/locations/global/workloadIdentityPools/github-pool/providers/github-provider' }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT || 'github-deployer@smartcity-515403.iam.gserviceaccount.com' }}
 
@@ -40,7 +49,7 @@ jobs:
         with:
           registry: ${{ env.REGION }}-docker.pkg.dev
           username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+          password: ${{ steps.auth_sa.outputs.access_token || steps.auth_wif.outputs.access_token }}
 
       # 3. Build, Tag, and Push Docker Image
       - name: Build and Push Container
@@ -50,9 +59,17 @@ jobs:
 
       # 4. Deploy to Google Cloud Run
       - name: Deploy to Cloud Run
+        id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          flags: --allow-unauthenticated --network=smart-city-vpc --subnet=smart-city-subnet
+          flags: --allow-unauthenticated
+
+      # 5. Output Public Deployment URL
+      - name: Output Cloud Run Deployment URL
+        run: |
+          echo "=========================================================="
+          echo " Google Cloud Run Live URL: ${{ steps.deploy.outputs.url }}"
+          echo "=========================================================="
