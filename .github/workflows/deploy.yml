@@ -28,7 +28,7 @@ jobs:
       - name: Detect Auth Mode
         id: auth_mode
         env:
-          SA_KEY: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || '' }}
+          SA_KEY: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_APPLICATION_CREDENTIALS || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || secrets.GCP_SERVICE_ACCOUNT_KEY || secrets.GCP_SECRET_KEY || secrets.SECRET_KEY || '' }}
         run: |
           if [ -n "$SA_KEY" ]; then
             echo "mode=sa" >> "$GITHUB_OUTPUT"
@@ -43,7 +43,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          credentials_json: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY }}
+          credentials_json: ${{ secrets.GCP_SA_KEY || secrets.GOOGLE_APPLICATION_CREDENTIALS || secrets.GOOGLE_CREDENTIALS || secrets.GCP_CREDENTIALS || secrets.GCP_KEY || secrets.SERVICE_ACCOUNT_KEY || secrets.GCP_SERVICE_ACCOUNT_KEY || secrets.GCP_SECRET_KEY || secrets.SECRET_KEY }}
 
       # 2b. Authenticate with Google Cloud using Workload Identity Federation (fallback)
       - name: Google Auth (Workload Identity Federation)
